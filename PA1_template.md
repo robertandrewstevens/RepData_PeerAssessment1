@@ -5,7 +5,8 @@ output:
     keep_md: true
 ---
 
-```{r setup, messages=FALSE, warning=FALSE}
+
+```r
 knitr::opts_chunk$set(
   echo = TRUE,
   fig.width = 10, 
@@ -13,6 +14,26 @@ knitr::opts_chunk$set(
 )
 
 library(tidyverse)
+```
+
+```
+## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+```
+
+```
+## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.7
+## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
+## ✔ readr   1.1.1     ✔ forcats 0.3.0
+```
+
+```
+## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+```
+
+```r
 library(lattice)
 ```
 
@@ -26,7 +47,8 @@ Show any code that is needed to
 
 ### Import
 
-```{r}
+
+```r
 activity <- read.csv(paste0("~/GitHub/RepData_PeerAssessment1/", "activity.csv"), header = TRUE, as.is = TRUE)
 ```
 
@@ -43,7 +65,8 @@ For this part of the assignment, you can ignore the missing values in the datase
 
 ### Transform
 
-```{r}
+
+```r
 total <- activity %>%
   dplyr::group_by(date) %>%
   dplyr::summarise(steps = sum(steps, na.rm = TRUE))
@@ -51,7 +74,8 @@ total <- activity %>%
 
 ### Visualize
 
-```{r}
+
+```r
 total %>%
   ggplot(aes(x = steps)) +
     geom_histogram(binwidth = 1000) +
@@ -62,18 +86,21 @@ total %>%
     )
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
 ### Model
 
-```{r}
+
+```r
 tnstpd_avg <- as.integer(round(mean(total$steps, na.rm = TRUE)))
 tnstpd_med <- as.integer(round(median(total$steps, na.rm = TRUE)))
 ```
 
 Total Number of Steps Taken per Day:
 
-- Mean = `r tnstpd_avg`
+- Mean = 9354
 
-- Median = `r tnstpd_med`
+- Median = 10395
 
 ## What is the average daily activity pattern?
 
@@ -83,7 +110,8 @@ Total Number of Steps Taken per Day:
 
 ### Transform
 
-```{r}
+
+```r
 avg_by_interval <- activity %>%
   dplyr::group_by(interval) %>%
   dplyr::summarise(steps = mean(steps, na.rm = TRUE))
@@ -91,7 +119,8 @@ avg_by_interval <- activity %>%
 
 ### Visualize
 
-```{r}
+
+```r
 avg_by_interval %>%
   ggplot(aes(x = interval, y = steps)) +
     geom_line() +
@@ -102,13 +131,16 @@ avg_by_interval %>%
     )
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
 ### Model
 
-```{r}
+
+```r
 max_interval <- avg_by_interval$interval[which.max(avg_by_interval$steps)]
 ```
 
-5-minute interval containing the maximum number of steps: `r max_interval`
+5-minute interval containing the maximum number of steps: 835
 
 ## Imputing missing values
 
@@ -128,7 +160,8 @@ Note that there are a number of days/intervals where there are missing values (c
 
 ### Transform
 
-```{r}
+
+```r
 # change "steps" to "avg_steps" before merge
 names(avg_by_interval) <- c("interval", "avg_steps") 
 
@@ -145,7 +178,8 @@ total2 <- activity2 %>%
 
 ### Visualize
 
-```{r}
+
+```r
 total2 %>%
   ggplot(aes(x = steps)) +
     geom_histogram(binwidth = 1000) +
@@ -157,22 +191,25 @@ total2 %>%
     )
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
 ### Model
 
-```{r}
+
+```r
 missing_steps <- sum(is.na(activity$steps))
 
 tnstpd_avg2 <- as.integer(round(mean(total2$steps, na.rm = TRUE)))
 tnstpd_med2 <- as.integer(round(median(total2$steps, na.rm = TRUE)))
 ```
 
-Total number of missing values in the dataset: `r missing_steps`
+Total number of missing values in the dataset: 2304
 
 Total Number of Steps Taken per Day after after replacing missing values with average for interval:
 
-- Mean = `r tnstpd_avg2`
+- Mean = 10766
 
-- Median = `r tnstpd_med2`
+- Median = 10766
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -185,7 +222,8 @@ For this part the `weekdays()` function may be of some help here. Use the datase
 
 ### Transform
 
-```{r}
+
+```r
 activity2 <- activity2 %>%
   dplyr::mutate(
     Date = as.Date(date),
@@ -200,7 +238,8 @@ avg_by_interval2 <- activity2 %>%
 
 ### Visualize
 
-```{r}
+
+```r
 xyplot(
   steps ~ interval | day_type, 
   data = avg_by_interval2, 
@@ -209,3 +248,5 @@ xyplot(
   type = "l"
 )
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
