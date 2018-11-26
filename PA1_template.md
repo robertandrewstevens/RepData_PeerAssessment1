@@ -1,5 +1,5 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
+title: "JHU DS 5 Week 2 Reproducible Research: Peer Assessment 1"
 output: 
   html_document:
     keep_md: true
